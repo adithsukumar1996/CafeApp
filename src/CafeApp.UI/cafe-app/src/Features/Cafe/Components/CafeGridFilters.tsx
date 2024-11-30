@@ -14,7 +14,7 @@ const CafeGridFilters: React.FC<CafeGridFiltersProps> = ({
     <>
       <TextField
         label="Location"
-        variant="outlined"
+        variant="standard"
         value={location}
         onChange={(e) => setLocation(e.target.value)}
       />

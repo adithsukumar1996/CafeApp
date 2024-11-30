@@ -10,17 +10,20 @@ interface LogoBase64ViewProps {
 const LogoBase64View: React.FC<LogoBase64ViewProps> = ({
   base64String,
   altText = "Logo",
-  width = "100px",
-  height = "100px",
+  width = "30px",
+  height = "30px",
 }) => {
   return (
-    <img
-      src={`${base64String}`}
-      alt={altText}
-      width={width}
-      height={height}
-      style={{ objectFit: "contain" }}
-    />
+    base64String &&
+    base64String != "" && (
+      <img
+        src={`${base64String}`}
+        alt={altText}
+        width={width}
+        height={height}
+        style={{ objectFit: "contain" }}
+      />
+    )
   );
 };
 

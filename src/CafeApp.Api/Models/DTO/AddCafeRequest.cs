@@ -15,6 +15,7 @@ namespace CafeApp.Api.Models.DTO {
         public string? LogoBase64 { get; init; }
 
         [Required]
+        [StringLength (512, ErrorMessage = "Location cannot exceed 512 characters.")]
         public required string Location { get; init; }
     }
 }

@@ -12,3 +12,9 @@ export const isEditCafeRequest = (
 ): obj is EditCafeRequest => {
   return (obj as EditCafeRequest).id !== undefined;
 };
+
+export const isAddCafeRequest = (
+  obj: AddCafeRequest | EditCafeRequest
+): obj is AddCafeRequest => {
+  return (obj as EditCafeRequest).id === undefined;
+};

@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Controller, useWatch } from "react-hook-form";
+import { TextField, Button } from "@mui/material";
 import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import {
-  EditCafeRequest,
   EditCafeRequestWithFiles,
+  isAddCafeRequest,
   isEditCafeRequest,
 } from "../Models/EditCafeRequest";
 import {
-  AddCafeRequest,
   AddCafeRequestWithFiles,
   defaultAddCafeRequest,
 } from "../Models/AddCafeRequest";
 import { addCafe, editCafe, getCafeById } from "../Services/CafeApiService";
 import LogoBase64View from "../../Common/Components/LogoBase64View";
-import { useNavigateAwayPrompt } from "../../Common/Hooks/UseNavigateAwayPrompt";
+import UseBaseForm from "../../Common/Hooks/UseBaseform";
+import SnackBar from "../../Common/Components/SnackBar";
+import { GetCafeResponse } from "../Models/GetCafeResponse";
 
 interface CafeFormProps {
   id?: string;
@@ -31,42 +24,34 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty },
-    reset,
+    errors,
+    isEditMode,
+    navigate,
+    onSubmit,
     setValue,
-  } = useForm<EditCafeRequestWithFiles | AddCafeRequestWithFiles>({
+    snackBarProps,
+    setSnackBarProps,
+  } = UseBaseForm<
+    AddCafeRequestWithFiles,
+    EditCafeRequestWithFiles,
+    GetCafeResponse
+  >({
+    add: addCafe,
+    edit: editCafe,
+    addTypeGuard: isAddCafeRequest,
     defaultValues: defaultAddCafeRequest,
+    editTypeGuard: isEditCafeRequest,
+    entityName: "cafe",
+    getDataById: getCafeById,
+    id: id,
+    mapper: (data) => ({
+      name: data.name,
+      description: data.description,
+      logoBase64: data.logo,
+      location: data.location,
+      id: data.id,
+    }),
   });
-  const navigate = useNavigate();
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<
-    "success" | "error" | "info" | "warning"
-  >("success");
-
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  useEffect(() => {
-    if (id) {
-      setIsEditMode(true);
-      getCafeById(id).then((data) => {
-        const editCafeRequest: EditCafeRequest = {
-          name: data.name,
-          description: data.description,
-          logoBase64: data.logo,
-          location: data.location,
-          id: data.id,
-        };
-        reset(editCafeRequest);
-      });
-    } else {
-      setIsEditMode(false);
-      reset(defaultAddCafeRequest);
-    }
-  }, [id, reset]);
 
   const logoFiles = useWatch({
     control,
@@ -82,9 +67,12 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
     if (logoFiles && logoFiles.length > 0) {
       const file = logoFiles[0];
       if (file.size > 2 * 1024 * 1024) {
-        setSnackbarMessage("File size cannot exceed 2 MB.");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
+        setSnackBarProps({
+          ...snackBarProps,
+          snackbarOpen: true,
+          snackbarMessage: "File size cannot exceed 2 MB",
+          snackbarSeverity: "error",
+        });
         return;
       }
       const reader = new FileReader();
@@ -106,38 +94,10 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
   //     enabled: isDirty,
   //   });
 
-  const onSubmit = (data: EditCafeRequest | AddCafeRequest) => {
-    if (isEditMode && isEditCafeRequest(data)) {
-      editCafe(data)
-        .then(() => {
-          setSnackbarMessage("Cafe updated successfully!");
-          setSnackbarSeverity("success");
-          setSnackbarOpen(true);
-        })
-        .catch(() => {
-          setSnackbarMessage("Failed to update cafe.");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-        });
-    } else {
-      addCafe(data)
-        .then(() => {
-          setSnackbarMessage("Cafe added successfully!");
-          setSnackbarSeverity("success");
-          setSnackbarOpen(true);
-        })
-        .catch(() => {
-          setSnackbarMessage("Failed to add cafe.");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
-        });
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
           <Controller
             name="name"
             control={control}
@@ -162,8 +122,8 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
               />
             )}
           />
-        </Grid>
-        <Grid item xs={12}>
+        </div>
+        <div>
           <Controller
             name="description"
             control={control}
@@ -184,8 +144,8 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
               />
             )}
           />
-        </Grid>
-        <Grid item xs={12}>
+        </div>
+        <div>
           <Controller
             name="location"
             control={control}
@@ -203,11 +163,12 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
                 error={!!errors.location}
                 helperText={errors.location?.message}
                 fullWidth
+                multiline={true}
               />
             )}
           />
-        </Grid>
-        <Grid item xs={12}>
+        </div>
+        <div>
           <Controller
             name="logoFiles"
             control={control}
@@ -232,7 +193,7 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
               },
             }}
             render={({ field }) => (
-              <>
+              <div className="flex">
                 <TextField
                   type="file"
                   inputProps={{ accept: "image/*" }}
@@ -241,40 +202,40 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     field.onChange(e.target.files);
                   }}
-                  fullWidth
-                />
-                <LogoBase64View base64String={logoBase64 || ""} />
-              </>
+                  className="w-4/5"
+                ></TextField>
+                <div className="w-1/5 mx-5">
+                  <LogoBase64View
+                    height="40px"
+                    width="40px"
+                    base64String={logoBase64 || ""}
+                  />
+                </div>
+              </div>
             )}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <Button type="submit" variant="contained" color="primary">
+        </div>
+        <div></div>
+        <div className="flex justify-center space-x-4 items-center">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className="h-10"
+          >
             {isEditMode ? "Update Cafe" : "Add Cafe"}
           </Button>
           <Button
             onClick={() => navigate("/cafe")}
             variant="outlined"
             color="secondary"
-            className="ml-2"
+            className="h-10"
           >
             Cancel
           </Button>
-        </Grid>
-      </Grid>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        </div>
+      </div>
+      <SnackBar {...snackBarProps} />
     </form>
   );
 };
