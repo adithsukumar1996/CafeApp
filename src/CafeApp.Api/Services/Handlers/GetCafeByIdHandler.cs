@@ -20,7 +20,7 @@ namespace CafeApp.Api.Handlers {
                 .GroupBy ("C.id", "C.description", "C.logo", "C.location", "C.name")
                 .OrderBy ("C.name")
                 .SelectRaw (@"C.id as Id ,
-                 C.description as Descirption ,
+                 C.description as Description,
                   C.logo as Logo,
                   C.location as Location,
                   C.name as Name, COUNT(E.id) as Employees")

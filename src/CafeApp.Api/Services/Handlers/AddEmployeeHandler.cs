@@ -22,9 +22,9 @@ namespace CafeApp.Api.Handlers {
 
         public async Task<string> Handle (AddEmployeeCommand command, CancellationToken cancellationToken) {
             var recentEmployee = await _employeeQueryRepository.GetMostRecentEmployee ();
-            var newId = IncrementHexString (recentEmployee.Id);
+            var newId = recentEmployee != null ? IncrementHexString (recentEmployee.Id) : "UI0000001";
             using (var scope = new TransactionScope (TransactionScopeAsyncFlowOption.Enabled)) {
-                var validCafe = await _cafeQueryRepository.GetCafeByIdAsync (new Guid (command.request.AssignedCafe));
+                var validCafe = await _cafeQueryRepository.GetCafeByIdAsync (command.request.AssignedCafe);
                 if (validCafe == null) {
                     throw new ArgumentException ("Invalid cafe ID.");
                 }
@@ -34,7 +34,7 @@ namespace CafeApp.Api.Handlers {
                     Gender = command.request.Gender,
                     Name = command.request.Name,
                     PhoneNumber = command.request.PhoneNumber,
-                    CreatedTime = DateTime.UtcNow,
+                    CreatedDate = DateTime.UtcNow,
                     StartDate = DateTime.UtcNow,
                     Id = newId
                 };

@@ -65,7 +65,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ id }) => {
           email: data.emailAddress,
           phoneNumber: data.phoneNumber,
           gender: data.gender,
-          assignedCafe: data.cafe,
+          assignedCafe: data.cafeId,
         };
         reset(editEmployeeRequest);
       });
@@ -109,11 +109,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ id }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6">
-            {isEditMode ? "Edit Employee" : "Add Employee"}
-          </Typography>
-        </Grid>
         <Grid item xs={12}>
           <Controller
             name="name"

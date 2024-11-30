@@ -21,6 +21,7 @@ import {
 } from "../Models/AddCafeRequest";
 import { addCafe, editCafe, getCafeById } from "../Services/CafeApiService";
 import LogoBase64View from "../../Common/Components/LogoBase64View";
+import { useNavigateAwayPrompt } from "../../Common/Hooks/UseNavigateAwayPrompt";
 
 interface CafeFormProps {
   id?: string;
@@ -30,7 +31,7 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
     setValue,
   } = useForm<EditCafeRequestWithFiles | AddCafeRequestWithFiles>({
@@ -95,6 +96,16 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
     }
   }, [logoFiles, setValue]);
 
+  //   useNavigateAwayPrompt({
+  //     onBlock: (navigation) =>
+  //       window.confirm(
+  //         "Are you sure you want to leave this page? Your changes will be lost."
+  //       )
+  //         ? navigation.confirm()
+  //         : navigation.cancel(),
+  //     enabled: isDirty,
+  //   });
+
   const onSubmit = (data: EditCafeRequest | AddCafeRequest) => {
     if (isEditMode && isEditCafeRequest(data)) {
       editCafe(data)
@@ -126,11 +137,6 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6">
-            {isEditMode ? "Edit Cafe" : "Add Cafe"}
-          </Typography>
-        </Grid>
         <Grid item xs={12}>
           <Controller
             name="name"
@@ -247,9 +253,10 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
             {isEditMode ? "Update Cafe" : "Add Cafe"}
           </Button>
           <Button
-            onClick={() => navigate("/cafes")}
+            onClick={() => navigate("/cafe")}
             variant="outlined"
             color="secondary"
+            className="ml-2"
           >
             Cancel
           </Button>

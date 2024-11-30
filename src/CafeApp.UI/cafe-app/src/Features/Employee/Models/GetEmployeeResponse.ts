@@ -5,6 +5,7 @@ export interface GetEmployeeResponse {
   phoneNumber: string;
   daysWorked: number;
   cafe: string;
+  cafeId: string;
   startDate: Date;
   gender: "M" | "F" | "O";
 }

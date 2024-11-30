@@ -7,7 +7,7 @@ import { GetCafeResponse } from "../Models/GetCafeResponse";
 export const getCafeListResponse = (
   location?: string
 ): Promise<Array<GetCafeResponse>> =>
-  get<Array<GetCafeResponse>>(`/cafe?location=${location}`);
+  get<Array<GetCafeResponse>>(`/cafe?location=${location ?? ""}`);
 
 export const getCafeById = (id: string): Promise<GetCafeResponse> =>
   get<GetCafeResponse>(`/cafe/${id}`);

@@ -15,7 +15,7 @@ const LogoBase64View: React.FC<LogoBase64ViewProps> = ({
 }) => {
   return (
     <img
-      src={`data:image/png;base64,${base64String}`}
+      src={`${base64String}`}
       alt={altText}
       width={width}
       height={height}

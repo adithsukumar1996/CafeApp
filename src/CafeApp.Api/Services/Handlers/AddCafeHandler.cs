@@ -18,12 +18,12 @@ namespace CafeApp.Api.Handlers {
         public async Task<Guid> Handle (AddCafeCommand command, CancellationToken cancellationToken) {
             var guid = Guid.NewGuid ();
             var cafe = new Cafe {
-                Id = guid,
+                Id = guid.ToString (),
                 Description = command.request.Description,
-                Logo = command.request.LogoBase64 != null ? Convert.FromBase64String (command.request.LogoBase64) : null,
+                Logo = command.request.LogoBase64,
                 Location = command.request.Location,
                 Name = command.request.Name,
-                CreatedTime = DateTime.UtcNow
+                CreatedDate = DateTime.UtcNow
             };
             using (var scope = new TransactionScope (TransactionScopeAsyncFlowOption.Enabled)) {
                 await _cafeCommandRepository.InsertAsync (cafe);

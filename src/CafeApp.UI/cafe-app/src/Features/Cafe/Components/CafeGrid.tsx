@@ -1,5 +1,5 @@
 import { AgGridReactProps, AgGridReact } from "ag-grid-react";
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { GetCafeResponse } from "../Models/GetCafeResponse";
 import { getCafeListResponse, deleteCafe } from "../Services/CafeApiService";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ const CafeGrid: FC<CafeGridProps> = ({ filters, showActions }) => {
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const gridRef = useRef<AgGridReact>(null);
 
   const handleDelete = (id: string) => {
     setDeleteId(id);
@@ -74,9 +75,17 @@ const CafeGrid: FC<CafeGridProps> = ({ filters, showActions }) => {
 
   return (
     <>
-      <div className="ag-theme-alpine" style={{ height: 500, width: 1000 }}>
-        <AgGridReact rowData={cafes} columnDefs={columnDefs} />
-      </div>
+      <AgGridReact
+        rowData={cafes}
+        ref={gridRef}
+        columnDefs={columnDefs}
+        domLayout="autoHeight"
+        onGridReady={() => {
+          if (gridRef.current) {
+            gridRef.current.api.sizeColumnsToFit();
+          }
+        }}
+      />
       <ConfirmationPopup
         open={open}
         message="Confirm Deletion of Cafe"

@@ -1,5 +1,5 @@
 import { AgGridReactProps, AgGridReact } from "ag-grid-react";
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ICellRendererParams } from "ag-grid-community";
 import ActionsCellRenderer from "../../Common/Components/ActionCellsRenderer";
@@ -20,6 +20,7 @@ const EmployeeGrid: FC<EmployeeGridProps> = ({ filters, showActions }) => {
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const gridRef = useRef<AgGridReact>(null);
 
   const handleDelete = (id: string) => {
     setDeleteId(id);
@@ -64,9 +65,16 @@ const EmployeeGrid: FC<EmployeeGridProps> = ({ filters, showActions }) => {
 
   return (
     <>
-      <div className="ag-theme-alpine" style={{ height: 500, width: 1000 }}>
-        <AgGridReact rowData={employees} columnDefs={columnDefs} />
-      </div>
+      <AgGridReact
+        rowData={employees}
+        columnDefs={columnDefs}
+        domLayout="autoHeight"
+        onGridReady={() => {
+          if (gridRef.current) {
+            gridRef.current.api.sizeColumnsToFit();
+          }
+        }}
+      />
       <ConfirmationPopup
         open={open}
         message="Confirm Deletion of Employee"

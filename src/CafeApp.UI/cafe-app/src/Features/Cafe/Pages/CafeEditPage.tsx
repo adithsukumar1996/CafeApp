@@ -6,7 +6,12 @@ const CafeEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   return (
     <>
-      <CafeForm id={id} />
+      <div className="container mx-auto p-4">
+        <h6 className="text-xl font-semibold mb-4">
+          {id ? "Edit Cafe" : "Add Cafe"}
+        </h6>
+        <CafeForm id={id} />
+      </div>
     </>
   );
 };

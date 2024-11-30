@@ -1,5 +1,7 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ActionsCellRendererProps {
   onEdit: () => void;
@@ -12,17 +14,12 @@ const ActionsCellRenderer: React.FC<ActionsCellRendererProps> = ({
 }) => {
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={onEdit}>
-        Edit
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={onDelete}
-        style={{ marginLeft: 8 }}
-      >
-        Delete
-      </Button>
+      <IconButton color="primary" onClick={onEdit}>
+        <EditIcon />
+      </IconButton>
+      <IconButton color="secondary" onClick={onDelete}>
+        <DeleteIcon />
+      </IconButton>
     </div>
   );
 };

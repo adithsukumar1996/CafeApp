@@ -9,7 +9,10 @@ namespace CafeApp.Api.DataAccessLayer.QueryRepository {
         }
 
         public async Task<Employee> GetMostRecentEmployee () {
-            return await _queryFactory.Query ("Employee").OrderBy ("startDate", "desc").FirstOrDefaultAsync<Employee> ();
+            return await _queryFactory.Query ("Employee")
+                .OrderByDesc ("pId")
+                .Limit (1)
+                .FirstOrDefaultAsync<Employee> ();
         }
 
     }

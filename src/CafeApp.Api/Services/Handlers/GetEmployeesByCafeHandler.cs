@@ -24,6 +24,7 @@ namespace CafeApp.Api.Handlers {
                     "Employee.PhoneNumber as PhoneNumber",
                     "Employee.Gender as Gender",
                     "Cafe.Name as Cafe",
+                    "Cafe.Id as CafeId",
                     "Employee.startDate as StartDate")
                 .OrderBy ("Employee.startDate");
             var result = (await query.GetAsync<GetEmployeeResponse> ()).Select (x => x with {

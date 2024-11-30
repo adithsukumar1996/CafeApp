@@ -7,7 +7,7 @@ import { GetEmployeeResponse } from "../Models/GetEmployeeResponse";
 export const getEmployeeResponse = (
   cafe?: string
 ): Promise<Array<GetEmployeeResponse>> =>
-  get<Array<GetEmployeeResponse>>(`/employee?cafe=${cafe}`);
+  get<Array<GetEmployeeResponse>>(`/employee?cafe=${cafe ?? ""}`);
 
 export const getEmployeeById = (id: string): Promise<GetEmployeeResponse> =>
   get<GetEmployeeResponse>(`/employee/${id}`);

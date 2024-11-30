@@ -27,7 +27,7 @@ namespace CafeApp.Api.Handlers {
                 if (existingEmployee == null) {
                     throw new ArgumentException ("Invalid employee ID.");
                 }
-                var validCafe = await _cafeQueryRepository.GetCafeByIdAsync (new Guid (command.request.AssignedCafe));
+                var validCafe = await _cafeQueryRepository.GetCafeByIdAsync (command.request.AssignedCafe);
                 if (validCafe == null) {
                     throw new ArgumentException ("Invalid cafe ID.");
                 }

@@ -8,10 +8,14 @@ export const CafeListPage: FC = () => {
   const [location, setLocation] = useState<string>("");
 
   return (
-    <>
-      <h6> Cafes</h6>
-      <CafeGridFilters location={location} setLocation={setLocation} />
-      <CafeGrid filters={{ location: location }} showActions={true} />
-    </>
+    <div className="container mx-auto p-4">
+      <h6 className="text-xl font-semibold mb-4">Cafes</h6>
+      <div className="mb-4">
+        <CafeGridFilters location={location} setLocation={setLocation} />
+      </div>
+      <div className="ag-theme-alpine">
+        <CafeGrid filters={{ location: location }} showActions={true} />
+      </div>
+    </div>
   );
 };

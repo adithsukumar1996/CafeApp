@@ -11,12 +11,12 @@ CREATE TABLE IF NOT EXISTS Cafe (
     id UUID NOT NULL UNIQUE,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
-    logo BLOB,
+    logo TEXT,
     location TEXT NOT NULL,
     createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     createdBy TEXT NOT NULL DEFAULT 'system',
     modifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modifedBy TEXT NOT NULL DEFAULT 'system'
+    modifiedBy TEXT NOT NULL DEFAULT 'system'
 );
 
 CREATE TABLE IF NOT EXISTS Employee (
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS Employee (
     createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     createdBy TEXT NOT NULL DEFAULT 'system',
     modifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modifedBy TEXT NOT NULL DEFAULT 'system',
+    modifiedBy TEXT NOT NULL DEFAULT 'system',
     FOREIGN KEY (cafeId) REFERENCES Cafe(pId) ON DELETE CASCADE
 );
 
@@ -48,7 +48,7 @@ INSERT INTO
         logo,
         location,
         createdBy,
-        modifedBy
+        modifiedBy
     )
 VALUES
     (
@@ -84,7 +84,7 @@ INSERT INTO
         gender,
         cafeId,
         createdBy,
-        modifedBy
+        modifiedBy
     )
 VALUES
     (

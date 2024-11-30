@@ -9,7 +9,7 @@ using CafeApp.Api.Models.DTO;
 using MediatR;
 
 namespace CafeApp.Api.Handlers {
-    public class EditCafeHandler : IRequestHandler<EditCafeCommand, Guid> {
+    public class EditCafeHandler : IRequestHandler<EditCafeCommand, string> {
         private readonly CafeCommandRepository _cafeCommandRepository;
         private readonly CafeQueryRepository _cafeQueryRepository;
 
@@ -18,24 +18,22 @@ namespace CafeApp.Api.Handlers {
             _cafeQueryRepository = cafeQueryRepository;
         }
 
-        public async Task<Guid> Handle (EditCafeCommand command, CancellationToken cancellationToken) {
-            var guid = new Guid (command.request.Id);
+        public async Task<string> Handle (EditCafeCommand command, CancellationToken cancellationToken) {
             using (var scope = new TransactionScope (TransactionScopeAsyncFlowOption.Enabled)) {
-                var existingCafe = await _cafeQueryRepository.GetCafeByIdAsync (guid);
+                var existingCafe = await _cafeQueryRepository.GetCafeByIdAsync (command.request.Id);
                 if (existingCafe == null) {
                     throw new ArgumentException ("Invalid Cafe ID.");
                 }
                 var cafe = existingCafe with {
-                    Id = guid,
                     Description = command.request.Description,
-                    Logo = command.request.LogoBase64 != null ? Convert.FromBase64String (command.request.LogoBase64) : null,
+                    Logo = command.request.LogoBase64,
                     Location = command.request.Location,
                     Name = command.request.Name
                 };
                 await _cafeCommandRepository.UpdateAsync (cafe);
                 scope.Complete ();
             }
-            return guid;
+            return command.request.Id;
 
         }
     }
