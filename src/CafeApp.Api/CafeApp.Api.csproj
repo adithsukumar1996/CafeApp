@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
     <PackageReference Include="SqlKata" Version="2.0.7" />
@@ -16,5 +17,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="DB\InitDB.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup> 
 
 </Project>

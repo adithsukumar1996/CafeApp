@@ -11,8 +11,12 @@ namespace CafeApp.Api.DataAccessLayer {
             _queryFactory = queryFactory;
         }
 
-        public Query Get () {
-            return _queryFactory.Query (typeof (T).Name);
+        public virtual Query Get (string alias = null) {
+            var tableName = typeof (T).Name;
+            if (!string.IsNullOrEmpty (alias)) {
+                tableName += " as " + alias;
+            }
+            return _queryFactory.Query (tableName);
         }
     }
 }

@@ -1,65 +1,129 @@
+DELETE from
+    Employee;
+
+DELETE from
+    Cafe;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Cafe;
+
 CREATE TABLE IF NOT EXISTS Cafe (
-    id UUID PRIMARY KEY,
+    pId INTEGER PRIMARY KEY,
+    id UUID NOT NULL UNIQUE,
+    name TEXT NOT NULL,
     description TEXT NOT NULL,
     logo BLOB,
-    location TEXT NOT NULL
+    location TEXT NOT NULL,
+    createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    createdBy TEXT NOT NULL DEFAULT 'system',
+    modifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modifedBy TEXT NOT NULL DEFAULT 'system'
 );
 
 CREATE TABLE IF NOT EXISTS Employee (
-    id TEXT PRIMARY KEY CHECK (id LIKE 'UI%'),
+    pId INTEGER PRIMARY KEY,
+    id TEXT NOT NULL UNIQUE CHECK (
+        id GLOB 'UI[A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9]'
+    ),
     name TEXT NOT NULL,
-    email_address TEXT NOT NULL CHECK (email_address LIKE '%_@__%.__%'),
-    phone_number TEXT NOT NULL CHECK (phone_number GLOB '[89][0-9]{7}'),
-    gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
-    cafe_id UUID,
-    start_date DATETIME,
-    FOREIGN KEY (cafe_id) REFERENCES Cafe(id)
+    emailAddress TEXT NOT NULL CHECK (emailAddress LIKE '%_@__%.__%'),
+    phoneNumber TEXT NOT NULL CHECK (
+        phoneNumber GLOB '[89][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'
+    ),
+    gender TEXT NOT NULL CHECK (gender IN ('M', 'F', 'O')),
+    cafeId int NOT NULL,
+    startDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    createdDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    createdBy TEXT NOT NULL DEFAULT 'system',
+    modifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modifedBy TEXT NOT NULL DEFAULT 'system',
+    FOREIGN KEY (cafeId) REFERENCES Cafe(pId) ON DELETE CASCADE
 );
 
--- Insert data into Cafe table
+
 INSERT INTO
-    Cafe (id, description, logo, location)
+    Cafe (
+        id,
+        name,
+        description,
+        logo,
+        location,
+        createdBy,
+        modifedBy
+    )
 VALUES
     (
-        '550e8400-e29b-41d4-a716-446655440000',
-        'Central Cafe',
+        lower(
+            hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-' || '4' || substr(hex(randomblob(2)), 2) || '-' || substr('AB89', 1 + (abs(random()) % 4), 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6))
+        ),
+        'Cafe Mocha',
+        'A cozy place for coffee lovers',
         NULL,
-        '123 Main St'
+        '123 Coffee St',
+        'system',
+        'system'
     ),
     (
-        '550e8400-e29b-41d4-a716-446655440001',
-        'Downtown Cafe',
+        lower(
+            hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-' || '4' || substr(hex(randomblob(2)), 2) || '-' || substr('AB89', 1 + (abs(random()) % 4), 1) || substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6))
+        ),
+        'Cafe Latte',
+        'Best lattes in town',
         NULL,
-        '456 Elm St'
+        '456 Latte Ave',
+        'system',
+        'system'
     );
 
--- Insert data into Employee table
+
 INSERT INTO
     Employee (
         id,
         name,
-        email_address,
-        phone_number,
+        emailAddress,
+        phoneNumber,
         gender,
-        cafe_id,
-        start_date
+        cafeId,
+        createdBy,
+        modifedBy
     )
 VALUES
     (
         'UI0000001',
         'John Doe',
         'john.doe@example.com',
-        '91234567',
+        '81234567',
         'M',
-        '550e8400-e29b-41d4-a716-446655440000',
-        '2023-01-01 09:00:00'
+        1,
+        'system',
+        'system'
     ),
     (
         'UI0000002',
         'Jane Smith',
         'jane.smith@example.com',
-        '81234567',
+        '91234567',
         'F',
-        '550e8400-e29b-41d4-a716-446655440001',
-        '2023-02-01 09:00:00'
+        1,
+        'system',
+        'system'
+    ),
+    (
+        'UI0000003',
+        'Alice Johnson',
+        'alice.johnson@example.com',
+        '81234568',
+        'F',
+        1,
+        'system',
+        'system'
+    ),
+    (
+        'UI0000004',
+        'Bob Brown',
+        'bob.brown@example.com',
+        '91234568',
+        'M',
+        1,
+        'system',
+        'system'
     );
