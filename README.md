@@ -46,6 +46,7 @@ Cafe Application in Dotnet 8 and React
 - [npm](https://www.npmjs.com/)
 
 ### Running the Application
+Both the front end and backend can be ran togethor using this powershell script
 
 ```bash
 cd scripts
