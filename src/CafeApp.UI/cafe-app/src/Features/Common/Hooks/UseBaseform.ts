@@ -3,6 +3,7 @@ import { useForm, FieldValues, DefaultValues } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { BaseCommandResponse } from "../Models/BaseCommandResponse";
 import { SnackBarProps } from "../Components/SnackBar";
+import { useNavigateAwayPrompt } from "./UseNavigateAwayPrompt";
 
 interface UseBaseFormProps<
   Tadd extends FieldValues,
@@ -26,7 +27,7 @@ function UseBaseForm<Tadd extends FieldValues, Tedit extends FieldValues, T2>(
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
     setValue,
   } = useForm<Tadd | Tedit>({
@@ -49,13 +50,19 @@ function UseBaseForm<Tadd extends FieldValues, Tedit extends FieldValues, T2>(
       setIsEditMode(true);
       props.getDataById(props.id).then((data) => {
         const formState: Tedit = props.mapper(data);
-        reset(formState);
+        reset(formState, { keepDirty: false });
       });
     } else {
       setIsEditMode(false);
-      reset(props.defaultValues);
+      reset(props.defaultValues, { keepDirty: false });
     }
   }, [props.id, reset]);
+
+  // Block navigating elsewhere when data has been entered into the input
+
+  useNavigateAwayPrompt(isDirty, "Are you sure you want to leave this page?", {
+    beforeUnload: true,
+  });
 
   const onSubmit = (data: Tadd | Tedit) => {
     if (isEditMode && props.editTypeGuard(data)) {
@@ -65,6 +72,7 @@ function UseBaseForm<Tadd extends FieldValues, Tedit extends FieldValues, T2>(
           setSnackbarMessage(`${props.entityName} updated successfully!`);
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
+          reset(data);
         })
         .catch(() => {
           setSnackbarMessage(`Failed to update ${props.entityName}`);
@@ -79,6 +87,7 @@ function UseBaseForm<Tadd extends FieldValues, Tedit extends FieldValues, T2>(
             setSnackbarMessage(`${props.entityName} added successfully!`);
             setSnackbarSeverity("success");
             setSnackbarOpen(true);
+            reset(props.defaultValues);
           })
           .catch(() => {
             setSnackbarMessage(`Failed to add ${props.entityName}.`);
@@ -103,6 +112,7 @@ function UseBaseForm<Tadd extends FieldValues, Tedit extends FieldValues, T2>(
     control,
     handleSubmit,
     errors,
+    isDirty,
     navigate,
     isEditMode,
     onSubmit,

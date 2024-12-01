@@ -15,6 +15,7 @@ import LogoBase64View from "../../Common/Components/LogoBase64View";
 import UseBaseForm from "../../Common/Hooks/UseBaseform";
 import SnackBar from "../../Common/Components/SnackBar";
 import { GetCafeResponse } from "../Models/GetCafeResponse";
+import { useNavigateAwayPrompt } from "../../Common/Hooks/UseNavigateAwayPrompt";
 
 interface CafeFormProps {
   id?: string;
@@ -25,6 +26,7 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
     control,
     handleSubmit,
     errors,
+    isDirty,
     isEditMode,
     navigate,
     onSubmit,
@@ -83,16 +85,6 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
       reader.readAsDataURL(file);
     }
   }, [logoFiles, setValue]);
-
-  //   useNavigateAwayPrompt({
-  //     onBlock: (navigation) =>
-  //       window.confirm(
-  //         "Are you sure you want to leave this page? Your changes will be lost."
-  //       )
-  //         ? navigation.confirm()
-  //         : navigation.cancel(),
-  //     enabled: isDirty,
-  //   });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
