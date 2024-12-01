@@ -1,17 +1,14 @@
-using System.Threading;
-using System.Threading.Tasks;
 using System.Transactions;
 using CafeApp.Api.Commands;
-using CafeApp.Api.DataAccessLayer.CommandRepository;
+using CafeApp.Api.DataAccessLayer.CommandRepository.Interfaces;
 using CafeApp.Api.Models;
-using CafeApp.Api.Models.DTO;
 using MediatR;
 
 namespace CafeApp.Api.Handlers {
     public class AddCafeHandler : IRequestHandler<AddCafeCommand, Guid> {
-        private readonly CafeCommandRepository _cafeCommandRepository;
+        private readonly ICafeCommandRepository _cafeCommandRepository;
 
-        public AddCafeHandler (CafeCommandRepository cafeCommandRepository) {
+        public AddCafeHandler (ICafeCommandRepository cafeCommandRepository) {
             _cafeCommandRepository = cafeCommandRepository;
         }
 

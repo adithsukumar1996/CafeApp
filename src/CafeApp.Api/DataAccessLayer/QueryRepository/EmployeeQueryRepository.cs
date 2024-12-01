@@ -1,8 +1,9 @@
+using CafeApp.Api.DataAccessLayer.QueryRepository.Interfaces;
 using CafeApp.Api.Models;
 using SqlKata.Execution;
 
 namespace CafeApp.Api.DataAccessLayer.QueryRepository {
-    public class EmployeeQueryRepository : BaseQueryRepository<Employee> {
+    public class EmployeeQueryRepository : BaseQueryRepository<Employee>, IEmployeeQueryRepository {
         public EmployeeQueryRepository (QueryFactory queryFactory) : base (queryFactory) { }
         public async Task<Employee> GetEmployeeeByIdAsync (string id) {
             return await _queryFactory.Query ("Employee").Where ("Id", id).FirstOrDefaultAsync<Employee> ();

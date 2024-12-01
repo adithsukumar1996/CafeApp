@@ -1,11 +1,7 @@
-using System;
 using System.Data;
-using System.Data.SqlClient;
-using System.IO;
 using CafeApp.Api.Configuration;
 using Dapper;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace CafeApp.Api.DB {

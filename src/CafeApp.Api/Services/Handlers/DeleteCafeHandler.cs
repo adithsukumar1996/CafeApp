@@ -1,19 +1,15 @@
-using System.Threading;
-using System.Threading.Tasks;
 using System.Transactions;
 using CafeApp.Api.Commands;
-using CafeApp.Api.DataAccessLayer.CommandRepository;
-using CafeApp.Api.DataAccessLayer.QueryRepository;
-using CafeApp.Api.Models;
-using CafeApp.Api.Models.DTO;
+using CafeApp.Api.DataAccessLayer.CommandRepository.Interfaces;
+using CafeApp.Api.DataAccessLayer.QueryRepository.Interfaces;
 using MediatR;
 
 namespace CafeApp.Api.Handlers {
     public class DeleteCafeHandler : IRequestHandler<DeleteCafeCommand, string> {
-        private readonly CafeCommandRepository _cafeCommandRepository;
-        private readonly CafeQueryRepository _cafeQueryRepository;
+        private readonly ICafeCommandRepository _cafeCommandRepository;
+        private readonly ICafeQueryRepository _cafeQueryRepository;
 
-        public DeleteCafeHandler (CafeCommandRepository cafeCommandRepository, CafeQueryRepository cafeQueryRepository) {
+        public DeleteCafeHandler (ICafeCommandRepository cafeCommandRepository, ICafeQueryRepository cafeQueryRepository) {
             _cafeCommandRepository = cafeCommandRepository;
             _cafeQueryRepository = cafeQueryRepository;
         }

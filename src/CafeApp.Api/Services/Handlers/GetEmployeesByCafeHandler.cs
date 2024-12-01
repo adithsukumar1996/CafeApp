@@ -1,4 +1,4 @@
-using CafeApp.Api.DataAccessLayer.QueryRepository;
+using CafeApp.Api.DataAccessLayer.QueryRepository.Interfaces;
 using CafeApp.Api.Models.DTO;
 using CafeApp.Api.Queries;
 using MediatR;
@@ -6,10 +6,10 @@ using SqlKata.Execution;
 
 namespace CafeApp.Api.Handlers {
     public class GetEmployeesByCafeHandler : IRequestHandler<GetEmployeesByCafeQuery, IEnumerable<GetEmployeeResponse>> {
-        private readonly CafeQueryRepository _cafeQueryRepository;
-        private readonly EmployeeQueryRepository _employeeQueryRepository;
+        private readonly ICafeQueryRepository _cafeQueryRepository;
+        private readonly IEmployeeQueryRepository _employeeQueryRepository;
 
-        public GetEmployeesByCafeHandler (CafeQueryRepository cafeQueryRepository, EmployeeQueryRepository employeeQueryRepository) {
+        public GetEmployeesByCafeHandler (ICafeQueryRepository cafeQueryRepository, IEmployeeQueryRepository employeeQueryRepository) {
             _cafeQueryRepository = cafeQueryRepository;
             _employeeQueryRepository = employeeQueryRepository;
         }

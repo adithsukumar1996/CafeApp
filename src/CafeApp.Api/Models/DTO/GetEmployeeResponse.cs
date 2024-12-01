@@ -1,5 +1,3 @@
-using System;
-
 namespace CafeApp.Api.Models.DTO {
     public record GetEmployeeResponse {
         public required string Id { get; init; }

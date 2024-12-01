@@ -1,9 +1,9 @@
 using System.Data;
-using System.Threading.Tasks;
+using CafeApp.Api.DataAccessLayer.CommandRepository.Interfaces;
 using Dapper.Contrib.Extensions;
 
 namespace CafeApp.Api.DataAccessLayer {
-    public abstract class BaseCommandRepository<T> where T : class {
+    public abstract class BaseCommandRepository<T> : IBaseCommandRepository<T> where T : class {
         protected readonly IDbConnection _dbConnection;
 
         protected BaseCommandRepository (IDbConnection dbConnection) {

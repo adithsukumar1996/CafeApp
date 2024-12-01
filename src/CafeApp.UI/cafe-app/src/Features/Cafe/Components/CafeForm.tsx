@@ -15,7 +15,6 @@ import LogoBase64View from "../../Common/Components/LogoBase64View";
 import UseBaseForm from "../../Common/Hooks/UseBaseform";
 import SnackBar from "../../Common/Components/SnackBar";
 import { GetCafeResponse } from "../Models/GetCafeResponse";
-import { useNavigateAwayPrompt } from "../../Common/Hooks/UseNavigateAwayPrompt";
 
 interface CafeFormProps {
   id?: string;
@@ -26,7 +25,6 @@ const CafeForm: React.FC<CafeFormProps> = ({ id }) => {
     control,
     handleSubmit,
     errors,
-    isDirty,
     isEditMode,
     navigate,
     onSubmit,

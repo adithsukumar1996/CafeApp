@@ -1,20 +1,16 @@
-using System.Threading;
-using System.Threading.Tasks;
 using System.Transactions;
 using CafeApp.Api.Commands;
-using CafeApp.Api.DataAccessLayer.CommandRepository;
-using CafeApp.Api.DataAccessLayer.QueryRepository;
-using CafeApp.Api.Models;
-using CafeApp.Api.Models.DTO;
+using CafeApp.Api.DataAccessLayer.CommandRepository.Interfaces;
+using CafeApp.Api.DataAccessLayer.QueryRepository.Interfaces;
 using MediatR;
 
 namespace CafeApp.Api.Handlers {
     public class EditEmployeeHandler : IRequestHandler<EditEmployeeCommand, string> {
-        private readonly EmployeeCommandRepository _employeeCommandRepository;
-        private readonly EmployeeQueryRepository _employeeQueryRepository;
-        private readonly CafeQueryRepository _cafeQueryRepository;
+        private readonly IEmployeeCommandRepository _employeeCommandRepository;
+        private readonly IEmployeeQueryRepository _employeeQueryRepository;
+        private readonly ICafeQueryRepository _cafeQueryRepository;
 
-        public EditEmployeeHandler (EmployeeCommandRepository employeeCommandRepository, EmployeeQueryRepository employeeQueryRepository, CafeQueryRepository cafeQueryRepository) {
+        public EditEmployeeHandler (IEmployeeCommandRepository employeeCommandRepository, IEmployeeQueryRepository employeeQueryRepository, ICafeQueryRepository cafeQueryRepository) {
             _employeeCommandRepository = employeeCommandRepository;
             _employeeQueryRepository = employeeQueryRepository;
             _cafeQueryRepository = cafeQueryRepository;

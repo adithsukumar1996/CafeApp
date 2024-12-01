@@ -1,15 +1,25 @@
 using System.Data;
 using CafeApp.Api.Configuration;
 using CafeApp.Api.DataAccessLayer.CommandRepository;
+using CafeApp.Api.DataAccessLayer.CommandRepository.Interfaces;
 using CafeApp.Api.DataAccessLayer.QueryRepository;
+using CafeApp.Api.DataAccessLayer.QueryRepository.Interfaces;
 using CafeApp.Api.DB;
 using CafeApp.Api.Handlers;
-using MediatR;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
+using Serilog;
 using SqlKata.Execution;
 
 var builder = WebApplication.CreateBuilder (args);
+
+//Configuring Serilog to log to the console
+Log.Logger = new LoggerConfiguration ()
+    .WriteTo.Console ()
+    .CreateLogger ();
+
+builder.Host.UseSerilog ();
 
 // Register DB Connections
 builder.Services.Configure<DatabaseSettings> (builder.Configuration.GetSection ("DatabaseSettings"));
@@ -25,10 +35,10 @@ builder.Services.AddScoped<QueryFactory> (sp => {
 });
 
 // Register repositories
-builder.Services.AddScoped<CafeQueryRepository> ();
-builder.Services.AddScoped<CafeCommandRepository> ();
-builder.Services.AddScoped<EmployeeQueryRepository> ();
-builder.Services.AddScoped<EmployeeCommandRepository> ();
+builder.Services.AddScoped<ICafeQueryRepository, CafeQueryRepository> ();
+builder.Services.AddScoped<ICafeCommandRepository, CafeCommandRepository> ();
+builder.Services.AddScoped<IEmployeeQueryRepository, EmployeeQueryRepository> ();
+builder.Services.AddScoped<IEmployeeCommandRepository, EmployeeCommandRepository> ();
 
 // Register MediatR
 builder.Services.AddMediatR (cfg => cfg.RegisterServicesFromAssembly (typeof (GetCafesByLocationHandler).Assembly));
@@ -57,6 +67,37 @@ if (app.Environment.IsDevelopment ()) {
     app.UseSwagger ();
     app.UseSwaggerUI ();
 }
+
+//Error HandlingMiddleware
+app.UseExceptionHandler (errorApp => {
+    errorApp.Run (async context => {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature> ();
+
+        if (exceptionHandlerPathFeature != null) {
+            var exception = exceptionHandlerPathFeature.Error;
+
+            //Handling Bad Request
+            if (exception is ArgumentException) {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync (System.Text.Json.JsonSerializer.Serialize (new {
+                    StatusCode = context.Response.StatusCode,
+                        Message = exception.Message
+                }));
+                return;
+            }
+
+            Log.Error (exception, "An unhandled exception has occurred.");
+
+            await context.Response.WriteAsync (System.Text.Json.JsonSerializer.Serialize (new {
+                StatusCode = context.Response.StatusCode,
+                    Message = "An internal server error has occurred."
+            }));
+        }
+    });
+});
 
 app.UseCors ("AllowLocalhost5173");
 app.UseHttpsRedirection ();
