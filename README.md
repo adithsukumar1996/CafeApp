@@ -52,6 +52,14 @@ cd scripts
 ./run.ps1
 ```
 
+### Accessing the Application
+
+Open your browser:
+
+- **API**: [https://localhost:7279](https://localhost:7279)
+- **UI**: [http://localhost:5173](http://localhost:5173)
+
+
 ### Alternate Ways to Run the Application
 
 #### Running the Backend
@@ -70,9 +78,3 @@ npm install
 npm run dev
 ```
 
-### Accessing the Application
-
-Open your browser:
-
-- **API**: [https://localhost:7279](https://localhost:7279)
-- **UI**: [http://localhost:5173](http://localhost:5173)
