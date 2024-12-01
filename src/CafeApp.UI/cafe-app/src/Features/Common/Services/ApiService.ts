@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://localhost:7279/api";
+const BASE_URL =
+  import.meta.env?.REACT_APP_API_BASE_URL || "https://localhost:7279/api";
 
 export function get<T>(url: `/${string}`): Promise<T> {
   return axios

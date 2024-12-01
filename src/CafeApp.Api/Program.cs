@@ -44,10 +44,12 @@ builder.Services.AddScoped<IEmployeeCommandRepository, EmployeeCommandRepository
 builder.Services.AddMediatR (cfg => cfg.RegisterServicesFromAssembly (typeof (GetCafesByLocationHandler).Assembly));
 
 // Add CORS services
+var allowedOrigins = builder.Configuration.GetSection ("AllowedOrigins").Get<string[]> ();
+
 builder.Services.AddCors (options => {
-    options.AddPolicy ("AllowLocalhost5173",
+    options.AddPolicy ("AllowLocalhost",
         builder => builder
-        .WithOrigins ("http://localhost:5173")
+        .WithOrigins (allowedOrigins ?? new string[] { "http://localhost:5173" })
         .AllowAnyMethod ()
         .AllowAnyHeader ());
 });
@@ -65,7 +67,10 @@ var app = builder.Build ();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment ()) {
     app.UseSwagger ();
-    app.UseSwaggerUI ();
+    app.UseSwaggerUI (c => {
+        c.SwaggerEndpoint ("/swagger/v1/swagger.json", "Cafe Api V1");
+        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    });
 }
 
 //Error HandlingMiddleware
@@ -99,7 +104,7 @@ app.UseExceptionHandler (errorApp => {
     });
 });
 
-app.UseCors ("AllowLocalhost5173");
+app.UseCors ("AllowLocalhost");
 app.UseHttpsRedirection ();
 app.UseAuthorization ();
 app.MapControllers ();
